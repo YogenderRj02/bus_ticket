@@ -119,16 +119,16 @@ body {
 
   <label>Company Name
     <select id="companyName">
-      <option value="NueGo">NueGo</option>
-          <option value="Vikas Travels Jaipur">Vikas Travels Jaipur</option>
-          <option value="Vijay Shakti Travels">Vijay Shakti Travels</option>
-          <option value="Gajraj Travels">Gajraj Travels</option>
-          <option value="Rishabh travels">Rishabh travels</option>
-          <option value="Mahadev Travels">Mahadev Travels</option>
-          <option value="Maharani Travels">Maharani Travels</option>
-          <option value="Goldline Super Deluxe">Goldline Super Deluxe</option>
-          <option value="Rahi Travells">Rahi Travells</option>
-          <option value="Ashok Travels Mandsaur">Ashok Travels Mandsaur</option>
+      <option>NueGo</option>
+      <option>Vikas Travels Jaipur</option>
+      <option>Vijay Shakti Travels</option>
+      <option>Gajraj Travels</option>
+      <option>Rishabh Travels</option>
+      <option>Mahadev Travels</option>
+      <option>Maharani Travels</option>
+      <option>Goldline Super Deluxe</option>
+      <option>Rahi Travells</option>
+      <option>Ashok Travels Mandsaur</option>
     </select>
   </label>
 
@@ -141,15 +141,15 @@ body {
   </label>
 
   <label>Name
-    <input id="name">
+    <input id="customerName">
   </label>
 
   <label>From
-    <input id="from">
+    <input id="fromLocation">
   </label>
 
   <label>To
-    <input id="to">
+    <input id="toLocation">
   </label>
 
   <label>Fare
@@ -187,8 +187,8 @@ body {
 
     <table>
       <tr>
-        <th>Desc</th>
-        <th>Amt</th>
+        <th>Description</th>
+        <th>Amount</th>
       </tr>
       <tr>
         <td>Bus Fare</td>
@@ -201,7 +201,6 @@ body {
     </table>
 
     <p class="text-right" id="amountWords"></p>
-
     <small>Thank you & have a safe journey</small>
   </div>
 </div>
@@ -210,35 +209,51 @@ body {
 function generateTicket() {
   const fare = parseFloat(document.getElementById("fare").value || 0);
 
-  displayCompanyName.innerText = companyName.value;
-  displaySrNo.innerText = srNo.value;
-  displaySeatNo.innerText = seatNo.value;
-  displayName.innerText = name.value;
-  displayFrom.innerText = from.value;
-  displayTo.innerText = to.value;
-  displayInvoiceDate.innerText = invoiceDate.value;
-  displayPaymentMode.innerText = paymentMode.value;
-  displayFare.innerText = fare.toFixed(2);
-  displayTotal.innerText = fare.toFixed(2);
-  amountWords.innerText = "Rupees " + fare.toFixed(2) + " Only";
+  document.getElementById("displayCompanyName").innerText =
+    document.getElementById("companyName").value;
+
+  document.getElementById("displaySrNo").innerText =
+    document.getElementById("srNo").value;
+
+  document.getElementById("displaySeatNo").innerText =
+    document.getElementById("seatNo").value;
+
+  document.getElementById("displayName").innerText =
+    document.getElementById("customerName").value;
+
+  document.getElementById("displayFrom").innerText =
+    document.getElementById("fromLocation").value;
+
+  document.getElementById("displayTo").innerText =
+    document.getElementById("toLocation").value;
+
+  document.getElementById("displayInvoiceDate").innerText =
+    document.getElementById("invoiceDate").value;
+
+  document.getElementById("displayPaymentMode").innerText =
+    document.getElementById("paymentMode").value;
+
+  document.getElementById("displayFare").innerText = fare.toFixed(2);
+  document.getElementById("displayTotal").innerText = fare.toFixed(2);
+  document.getElementById("amountWords").innerText =
+    "Rupees " + fare.toFixed(2) + " Only";
 }
 
 async function downloadPDF() {
   const { jsPDF } = window.jspdf;
-  const doc = new jsPDF("p","pt","a4");
+  const doc = new jsPDF("p", "pt", "a4");
   const ticket = document.getElementById("ticket");
 
-  const canvas = await html2canvas(ticket,{scale:2});
+  const canvas = await html2canvas(ticket, { scale: 2 });
   const imgData = canvas.toDataURL("image/png");
 
   const pdfWidth = doc.internal.pageSize.getWidth();
-  const imgHeight = canvas.height * pdfWidth / canvas.width;
+  const imgHeight = (canvas.height * pdfWidth) / canvas.width;
 
-  doc.addImage(imgData,"PNG",20,20,pdfWidth-40,imgHeight);
+  doc.addImage(imgData, "PNG", 20, 20, pdfWidth - 40, imgHeight);
   doc.save("bus-ticket.pdf");
 }
 </script>
 
 </body>
 </html>
-
