@@ -9,54 +9,60 @@
 
 <style>
 body {
-  background: #f2f2f2;
+  background: #eee;
   font-family: Arial, sans-serif;
   padding: 20px;
 }
 
 /* FORM */
 .form-section {
-  max-width: 600px;
+  max-width: 750px;
   margin: auto;
   background: #fff;
   padding: 25px;
   border-radius: 8px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
 
 .form-section h2 {
   text-align: center;
 }
 
-.form-section label {
-  display: block;
-  margin-top: 10px;
+label {
   font-weight: bold;
+  margin-top: 10px;
+  display: block;
 }
 
-.form-section input,
-.form-section select {
+input, select {
   width: 100%;
   padding: 8px;
   margin-top: 5px;
 }
 
-.form-section button {
-  width: 48%;
-  margin-top: 15px;
-  padding: 10px;
-  background: #007bff;
-  color: #fff;
-  border: none;
+button {
+  padding: 8px 12px;
+  margin-top: 10px;
   cursor: pointer;
 }
 
+/* PASSENGERS */
+.passenger {
+  border: 1px dashed #ccc;
+  padding: 10px;
+  margin-top: 10px;
+}
+
 /* TICKET */
-.ticket-section {
-  max-width: 360px;
-  margin: 30px auto;
-  background: #fff;
+.ticket-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.ticket {
+  width: 380px;
   padding: 15px;
+  background: #fff;
   border: 2px dashed #000;
   font-family: "Courier New", monospace;
 }
@@ -64,8 +70,7 @@ body {
 .ticket h2 {
   text-align: center;
   font-size: 18px;
-  margin-bottom: 8px;
-  text-transform: uppercase;
+  margin-bottom: 5px;
 }
 
 .ticket p {
@@ -73,40 +78,26 @@ body {
   margin: 3px 0;
 }
 
-.ticket hr {
-  border: none;
-  border-top: 1px dashed #000;
-  margin: 8px 0;
-}
-
 .ticket table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 6px;
 }
 
-.ticket table th,
-.ticket table td {
+.ticket th, .ticket td {
   font-size: 13px;
-  padding: 4px 2px;
   border-bottom: 1px dashed #000;
+  padding: 4px;
 }
 
-.ticket table th:last-child,
-.ticket table td:last-child {
+.ticket th:last-child,
+.ticket td:last-child {
   text-align: right;
-}
-
-.text-right {
-  text-align: right;
-  font-size: 13px;
-  font-weight: bold;
 }
 
 .ticket small {
   display: block;
   text-align: center;
-  margin-top: 8px;
+  margin-top: 6px;
   font-size: 11px;
 }
 </style>
@@ -115,143 +106,131 @@ body {
 <body>
 
 <div class="form-section">
-  <h2>Bus Ticket Form</h2>
+<h2>Bus Ticket Form</h2>
 
-  <label>Company Name
-    <select id="companyName">
-      <option>NueGo</option>
-      <option>Vikas Travels Jaipur</option>
-      <option>Vijay Shakti Travels</option>
-      <option>Gajraj Travels</option>
-      <option>Rishabh Travels</option>
-      <option>Mahadev Travels</option>
-      <option>Maharani Travels</option>
-      <option>Goldline Super Deluxe</option>
-      <option>Rahi Travells</option>
-      <option>Ashok Travels Mandsaur</option>
-    </select>
-  </label>
+<label>Company Name</label>
+<select id="companyName">
+  <option>Vikas Travels Jaipur</option>
+  <option>Gajraj Travels</option>
+  <option>Mahadev Travels</option>
+</select>
 
-  <label>Ticket Sr No
-    <input id="srNo">
-  </label>
+<label>From</label>
+<input id="fromCity">
 
-  <label>Seat No
-    <input id="seatNo">
-  </label>
+<label>To</label>
+<input id="toCity">
 
-  <label>Name
-    <input id="customerName">
-  </label>
+<label>Date</label>
+<input type="date" id="invoiceDate">
 
-  <label>From
-    <input id="fromLocation">
-  </label>
+<label>Payment Mode</label>
+<select id="paymentMode">
+  <option>CASH</option>
+  <option>UPI</option>
+</select>
 
-  <label>To
-    <input id="toLocation">
-  </label>
+<h3>Passengers</h3>
+<div id="passengers"></div>
 
-  <label>Fare
-    <input id="fare" type="number">
-  </label>
-
-  <label>Date
-    <input id="invoiceDate" type="date">
-  </label>
-
-  <label>Payment Mode
-    <select id="paymentMode">
-      <option>CASH</option>
-      <option>UPI</option>
-    </select>
-  </label>
-
-  <button onclick="generateTicket()">Generate</button>
-  <button onclick="downloadPDF()">Download PDF</button>
+<button onclick="addPassenger()">+ Add Passenger</button>
+<br><br>
+<button onclick="generateTicket()">Generate Ticket</button>
+<button onclick="downloadPDF()">Download PDF</button>
 </div>
 
-<div class="ticket-section">
-  <div id="ticket" class="ticket">
-    <h2 id="displayCompanyName"></h2>
-    <hr>
-
-    <p>Sr No: <span id="displaySrNo"></span></p>
-    <p>Name: <span id="displayName"></span></p>
-    <p>Seat: <span id="displaySeatNo"></span></p>
-    <p>Route: <span id="displayFrom"></span> → <span id="displayTo"></span></p>
-    <p>Date: <span id="displayInvoiceDate"></span></p>
-    <p>Pay Mode: <span id="displayPaymentMode"></span></p>
-
-    <hr>
-
-    <table>
-      <tr>
-        <th>Description</th>
-        <th>Amount</th>
-      </tr>
-      <tr>
-        <td>Bus Fare</td>
-        <td id="displayFare"></td>
-      </tr>
-      <tr>
-        <td><strong>Total</strong></td>
-        <td id="displayTotal"></td>
-      </tr>
-    </table>
-
-    <p class="text-right" id="amountWords"></p>
-    <small>Thank you & have a safe journey</small>
-  </div>
+<div class="ticket-wrapper">
+<div id="ticket" class="ticket"></div>
 </div>
 
 <script>
+let srCounter = 1;
+
+function addPassenger() {
+  const div = document.createElement("div");
+  div.className = "passenger";
+  div.innerHTML = `
+    <label>Name</label>
+    <input class="pname">
+    <label>Seat</label>
+    <input class="pseat">
+    <label>Fare</label>
+    <input type="number" class="pfare">
+    <button onclick="this.parentElement.remove()">Remove</button>
+  `;
+  document.getElementById("passengers").appendChild(div);
+}
+
+function numberToWords(num) {
+  const a=['','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen'];
+  const b=['','','Twenty','Thirty','Forty','Fifty','Sixty','Seventy','Eighty','Ninety'];
+  if(num===0) return 'Zero';
+  function c(n){
+    let s='';
+    if(n>=100000){s+=c(Math.floor(n/100000))+' Lakh ';n%=100000;}
+    if(n>=1000){s+=c(Math.floor(n/1000))+' Thousand ';n%=1000;}
+    if(n>=100){s+=c(Math.floor(n/100))+' Hundred ';n%=100;}
+    if(n>0){
+      if(s!=='') s+='and ';
+      if(n<20) s+=a[n];
+      else s+=b[Math.floor(n/10)] + (n%10?' '+a[n%10]:'');
+    }
+    return s.trim();
+  }
+  return c(num);
+}
+
 function generateTicket() {
-  const fare = parseFloat(document.getElementById("fare").value || 0);
+  const passengers = document.querySelectorAll(".passenger");
+  let total = 0;
+  let rows = "";
 
-  document.getElementById("displayCompanyName").innerText =
-    document.getElementById("companyName").value;
+  passengers.forEach((p,i)=>{
+    const name = p.querySelector(".pname").value;
+    const seat = p.querySelector(".pseat").value;
+    const fare = parseFloat(p.querySelector(".pfare").value||0);
+    total += fare;
+    rows += `<tr><td>${name} (${seat})</td><td>${fare.toFixed(2)}</td></tr>`;
+  });
 
-  document.getElementById("displaySrNo").innerText =
-    document.getElementById("srNo").value;
+  const srNo = `${new Date().getFullYear()}-${srCounter++}`;
 
-  document.getElementById("displaySeatNo").innerText =
-    document.getElementById("seatNo").value;
-
-  document.getElementById("displayName").innerText =
-    document.getElementById("customerName").value;
-
-  document.getElementById("displayFrom").innerText =
-    document.getElementById("fromLocation").value;
-
-  document.getElementById("displayTo").innerText =
-    document.getElementById("toLocation").value;
-
-  document.getElementById("displayInvoiceDate").innerText =
-    document.getElementById("invoiceDate").value;
-
-  document.getElementById("displayPaymentMode").innerText =
-    document.getElementById("paymentMode").value;
-
-  document.getElementById("displayFare").innerText = fare.toFixed(2);
-  document.getElementById("displayTotal").innerText = fare.toFixed(2);
-  document.getElementById("amountWords").innerText =
-    "Rupees " + fare.toFixed(2) + " Only";
+  document.getElementById("ticket").innerHTML = `
+    <h2>${companyName.value}</h2>
+    <p>SR No: ${srNo}</p>
+    <p>Route: ${fromCity.value} → ${toCity.value}</p>
+    <p>Date: ${invoiceDate.value}</p>
+    <p>Payment: ${paymentMode.value}</p>
+    <hr>
+    <table>
+      <tr><th>Passenger</th><th>Fare</th></tr>
+      ${rows}
+      <tr><td><strong>Total</strong></td><td>${total.toFixed(2)}</td></tr>
+    </table>
+    <p><strong>Rupees ${numberToWords(Math.floor(total))} Only</strong></p>
+    <small>Thank you & have a safe journey</small>
+  `;
 }
 
 async function downloadPDF() {
   const { jsPDF } = window.jspdf;
-  const doc = new jsPDF("p", "pt", "a4");
+  const pdf = new jsPDF("p","mm","a4");
   const ticket = document.getElementById("ticket");
 
-  const canvas = await html2canvas(ticket, { scale: 2 });
+  const canvas = await html2canvas(ticket,{scale:3});
   const imgData = canvas.toDataURL("image/png");
 
-  const pdfWidth = doc.internal.pageSize.getWidth();
-  const imgHeight = (canvas.height * pdfWidth) / canvas.width;
+  const w = 110;
+  const h = canvas.height * w / canvas.width;
+  const x = (210 - w) / 2;
 
-  doc.addImage(imgData, "PNG", 20, 20, pdfWidth - 40, imgHeight);
-  doc.save("bus-ticket.pdf");
+  pdf.addImage(imgData,"PNG",x,20,w,h);
+
+  const firstPassenger =
+    document.querySelector(".pname")?.value || "Ticket";
+  const date = invoiceDate.value || "date";
+
+  pdf.save(`${firstPassenger}_${date}.pdf`);
 }
 </script>
 
