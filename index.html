@@ -110,9 +110,16 @@ button {
 
 <label>Company Name</label>
 <select id="companyName">
-  <option>Vikas Travels Jaipur</option>
-  <option>Gajraj Travels</option>
-  <option>Mahadev Travels</option>
+  <option value="NueGo">NueGo</option>
+          <option value="Vikas Travels Jaipur">Vikas Travels Jaipur</option>
+          <option value="Vijay Shakti Travels">Vijay Shakti Travels</option>
+          <option value="Gajraj Travels">Gajraj Travels</option>
+          <option value="Rishabh travels">Rishabh travels</option>
+          <option value="Mahadev Travels">Mahadev Travels</option>
+          <option value="Maharani Travels">Maharani Travels</option>
+          <option value="Goldline Super Deluxe">Goldline Super Deluxe</option>
+          <option value="Rahi Travells">Rahi Travells</option>
+          <option value="Ashok Travels Mandsaur">Ashok Travels Mandsaur</option>
 </select>
 
 <label>From</label>
@@ -214,17 +221,49 @@ function generateTicket() {
 
 async function downloadPDF() {
   const { jsPDF } = window.jspdf;
-  const pdf = new jsPDF("p","mm","a4");
+  const pdf = new jsPDF("p", "mm", "a4");
+
   const ticket = document.getElementById("ticket");
 
-  const canvas = await html2canvas(ticket,{scale:3});
+  const canvas = await html2canvas(ticket, {
+    scale: 4,          // 👈 high clarity
+    useCORS: true
+  });
+
   const imgData = canvas.toDataURL("image/png");
 
-  const w = 110;
-  const h = canvas.height * w / canvas.width;
-  const x = (210 - w) / 2;
+  const pageWidth = 210;      // A4 width (mm)
+  const pageHeight = 297;     // A4 height (mm)
 
-  pdf.addImage(imgData,"PNG",x,20,w,h);
+  const margin = 15;
+  const usableWidth = pageWidth - margin * 2;
+
+  const imgWidth = usableWidth;
+  const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+  let y = margin;
+
+  // Agar height A4 se zyada ho to auto scale
+  if (imgHeight > pageHeight - margin * 2) {
+    const scale = (pageHeight - margin * 2) / imgHeight;
+    pdf.addImage(
+      imgData,
+      "PNG",
+      margin,
+      margin,
+      imgWidth * scale,
+      imgHeight * scale
+    );
+  } else {
+    pdf.addImage(
+      imgData,
+      "PNG",
+      margin,
+      y,
+      imgWidth,
+      imgHeight
+    );
+  }
 
   const firstPassenger =
     document.querySelector(".pname")?.value || "Ticket";
@@ -236,3 +275,4 @@ async function downloadPDF() {
 
 </body>
 </html>
+
